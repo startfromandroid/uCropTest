@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 弹出请求权限的对话框
-     *
+     *ss
      * @param permission
      * @param rationale
      * @param requestCode
