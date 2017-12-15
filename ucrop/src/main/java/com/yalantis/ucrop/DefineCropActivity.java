@@ -30,7 +30,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
@@ -116,7 +115,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         setImageData(intent);
         setAllowedGestures(0);
         addBlockingView();
-        Toast.makeText(this, mGestureCropImageView.getCurrentScale() + "", Toast.LENGTH_SHORT).show();
     }
 
     private void setAllowedGestures(int tab) {
