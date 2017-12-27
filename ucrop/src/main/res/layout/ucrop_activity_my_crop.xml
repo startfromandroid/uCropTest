@@ -51,6 +51,16 @@
             android:layout_centerVertical="true"
             android:src="@drawable/icon_cut_dui" />
 
+        <ProgressBar
+            android:id="@+id/state_loader"
+            style="@style/ucrop_ImageViewWidgetIcon"
+            android:layout_alignBottom="@+id/state_cancle"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:progressDrawable="@drawable/ucrop_vector_loader"
+             />
+
 
     </RelativeLayout>
 

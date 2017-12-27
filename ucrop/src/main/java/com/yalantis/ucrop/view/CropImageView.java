@@ -240,8 +240,6 @@ public class CropImageView extends TransformImageView {
             super.postScale(deltaScale, px, py);
         } else if (deltaScale < 1 && getCurrentScale() * deltaScale >= getMinScale()) {
             super.postScale(deltaScale, px, py);
-        }else {
-            Toast.makeText(getContext(), getCurrentScale() +"CurrentScale()"+  getCurrentScale() * deltaScale+"==="+deltaScale+"=="+getMaxScale()+getMinScale(), Toast.LENGTH_SHORT).show();
         }
     }
 

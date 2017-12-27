@@ -44,7 +44,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 public class DefineCropActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final int DEFAULT_COMPRESS_QUALITY = 90;
+    public static final int DEFAULT_COMPRESS_QUALITY =100 ;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
 
     public static final int NONE = 0;
@@ -60,7 +60,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         } else if (i == R.id.state_done) {
             cropAndSaveImage();
         } else if (i == R.id.state_reset) {
-
             resetRotation();
         } else if (i == R.id.state_rotate) {
             rotateByAngle(90);
@@ -324,7 +323,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
             mBlockingView.setClickable(false);
             mShowLoader = false;
-            supportInvalidateOptionsMenu();
         }
 
         @Override
@@ -383,9 +381,8 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
      */
     protected void cropAndSaveImage() {
         mBlockingView.setClickable(true);
-        mShowLoader = true;
-        supportInvalidateOptionsMenu();
-
+        findViewById(R.id.state_loader).setVisibility(View.VISIBLE);
+        findViewById(R.id.state_done).setVisibility(View.GONE);
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
