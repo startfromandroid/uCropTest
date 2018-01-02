@@ -46,6 +46,8 @@ public class BitmapLoadUtils {
         } catch (OutOfMemoryError error) {
             Log.e(TAG, "transformBitmap: ", error);
         }
+        Log.i("wechat", "压缩前图片的大小" + (bitmap.getByteCount() / 1024 / 1024)
+                + "M宽度为" + bitmap.getWidth() + "高度为" + bitmap.getHeight());
         return bitmap;
     }
 

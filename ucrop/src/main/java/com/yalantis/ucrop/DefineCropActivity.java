@@ -33,15 +33,20 @@ import android.widget.TextView;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 public class DefineCropActivity extends AppCompatActivity implements View.OnClickListener {
     public static final int DEFAULT_COMPRESS_QUALITY =100 ;
@@ -160,17 +165,37 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
      * 设置 裁剪图片相关
      */
     private void setImageData(@NonNull Intent intent) {
-        Uri inputUri = intent.getParcelableExtra(UCrop.EXTRA_INPUT_URI);
-        Uri outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
+        final Uri inputUri = intent.getParcelableExtra(UCrop.EXTRA_INPUT_URI);
+        final Uri outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
         processOptions(intent);
-
         if (inputUri != null && outputUri != null) {
-            try {
-                mGestureCropImageView.setImageUri(inputUri, outputUri);
-            } catch (Exception e) {
-                setResultError(e);
-                finish();
-            }
+                String path = FileUtils.getPath(this,inputUri);
+                Luban.with(this)
+                        .load(path)
+                        .ignoreBy(200)
+                        .setCompressListener(new OnCompressListener() {
+                            @Override
+                            public void onStart() {
+
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                try {
+                                    mGestureCropImageView.setImageUri(Uri.fromFile(file), outputUri);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    setResultError(e);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                setResultError(e);
+                                finish();
+                            }
+                        }).launch();
         } else {
             setResultError(new NullPointerException(getString(R.string.ucrop_error_input_data_is_absent)));
             finish();
@@ -271,32 +296,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    /**
-     * Configures and styles both status bar and toolbar.
-     */
-    private void setupAppBar() {
-        setStatusBarColor(mStatusBarColor);
-
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        // Set all of the Toolbar coloring
-        toolbar.setBackgroundColor(mToolbarColor);
-        toolbar.setTitleTextColor(mToolbarWidgetColor);
-        final TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setTextColor(mToolbarWidgetColor);
-        toolbarTitle.setText(mToolbarTitle);
-
-        // Color buttons inside the Toolbar
-        Drawable stateButtonDrawable = ContextCompat.getDrawable(this, mToolbarCancelDrawable).mutate();
-        stateButtonDrawable.setColorFilter(mToolbarWidgetColor, PorterDuff.Mode.SRC_ATOP);
-        toolbar.setNavigationIcon(stateButtonDrawable);
-
-        setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
-    }
 
     private void initiateRootViews() {
         mUCropView = (UCropView) findViewById(R.id.ucrop);
@@ -383,10 +382,12 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         mBlockingView.setClickable(true);
         findViewById(R.id.state_loader).setVisibility(View.VISIBLE);
         findViewById(R.id.state_done).setVisibility(View.GONE);
+        final long a =System.currentTimeMillis();
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+                Log.i("cropAndSaveImage",(System.currentTimeMillis()-a)/100+"");
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight);
                 finish();
             }
