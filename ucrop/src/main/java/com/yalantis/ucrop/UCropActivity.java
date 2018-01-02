@@ -189,7 +189,7 @@ public class UCropActivity extends AppCompatActivity {
                 finish();
             }
         } else {
-            setResultError(new NullPointerException(getString(R.string.ucrop_error_input_data_is_absent)));
+            setResultError(new NullPointerException("没有指定输出的uri"));
             finish();
         }
     }

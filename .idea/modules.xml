@@ -3,11 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://F:\edngdownload\hello_world-develop\hello_world-develop\uCropTest\app\app.iml" filepath="F:\edngdownload\hello_world-develop\hello_world-develop\uCropTest\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/uCropTest.iml" filepath="$PROJECT_DIR$/uCropTest.iml" />
-      <module fileurl="file://F:\edngdownload\hello_world-develop\hello_world-develop\uCropTest\uCropTest.iml" filepath="F:\edngdownload\hello_world-develop\hello_world-develop\uCropTest\uCropTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/ucrop/ucrop.iml" filepath="$PROJECT_DIR$/ucrop/ucrop.iml" />
-      <module fileurl="file://F:\edngdownload\hello_world-develop\hello_world-develop\uCropTest\ucrop\ucrop.iml" filepath="F:\edngdownload\hello_world-develop\hello_world-develop\uCropTest\ucrop\ucrop.iml" />
     </modules>
   </component>
 </project>
