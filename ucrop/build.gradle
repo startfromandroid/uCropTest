@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'top.zibin:Luban:1.1.3'
 }
