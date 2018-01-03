@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        System.out.println("heigth : " + dm.heightPixels);
+        System.out.println("width : " + dm.widthPixels);
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
         options.setHideBottomControls(true);
         //自由裁剪是否开启
         options.setFreeStyleCropEnabled(true);
-//        options.setCropGridColor(getResources().getColor(R.color.colorAccent));
+        options.setCropGridColor(getResources().getColor(R.color.colorAccent));
 //        options.setCropFrameColor(getResources().getColor(R.color.colorAccent));
-        options.setMaxBitmapSize(640);
+//        options.setMaxBitmapSize(640);
         return uCrop.withOptions(options);
     }
 
@@ -182,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleCropResult(@NonNull Intent result) {
         final Uri resultUri = UCrop.getOutput(result);
         if (resultUri != null) {
-            ImageView imageView= findViewById(R.id.image);
+            ImageView imageView= (ImageView) findViewById(R.id.image);
             Toast.makeText(this,"裁剪返回", Toast.LENGTH_SHORT).show();
             imageView.setImageURI(resultUri);
         } else {
