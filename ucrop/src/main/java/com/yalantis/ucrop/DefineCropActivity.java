@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
@@ -35,7 +37,7 @@ import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
 public class DefineCropActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final int DEFAULT_COMPRESS_QUALITY =100 ;
+    public static final int DEFAULT_COMPRESS_QUALITY = 100;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
 
     public static final int NONE = 0;
@@ -59,7 +61,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-
     private static final int TABS_COUNT = 3;
 
 
@@ -79,13 +80,14 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
-     Intent intent;
+    Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.ucrop_activity_my_crop);
-        intent= getIntent();
+        intent = getIntent();
         setupViews(intent);
         setImageData(intent);
         setAllowedGestures(0);
@@ -139,33 +141,33 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         final Uri outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
         processOptions(intent);
         if (inputUri != null && outputUri != null) {
-                String path = FileUtils.getPath(this,inputUri);
-                Luban.with(this)
-                        .load(path)
-                        .ignoreBy(200)
-                        .setCompressListener(new OnCompressListener() {
-                            @Override
-                            public void onStart() {
+            String path = FileUtils.getPath(this, inputUri);
+            Luban.with(this)
+                    .load(path)
+                    .ignoreBy(200)
+                    .setCompressListener(new OnCompressListener() {
+                        @Override
+                        public void onStart() {
 
-                            }
+                        }
 
-                            @Override
-                            public void onSuccess(File file) {
-                                try {
-                                    mGestureCropImageView.setImageUri(Uri.fromFile(file), outputUri);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    setResultError(e);
-                                    finish();
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
+                        @Override
+                        public void onSuccess(File file) {
+                            try {
+                                mGestureCropImageView.setImageUri(Uri.fromFile(file), outputUri);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 setResultError(e);
                                 finish();
                             }
-                        }).launch();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            setResultError(e);
+                            finish();
+                        }
+                    }).launch();
         } else {
             setResultError(new NullPointerException(getString(R.string.ucrop_error_input_data_is_absent)));
             finish();
@@ -268,7 +270,8 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
 
         findViewById(R.id.ucrop_frame).setBackgroundColor(mRootViewBackgroundColor);
     }
-    Matrix oldmatrix;
+
+    float scale = 1.0f;
     private TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
         @Override
         public void onRotate(float currentAngle) {
@@ -282,7 +285,12 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         public void onLoadComplete() {
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
             mBlockingView.setClickable(false);
-            oldmatrix= mGestureCropImageView.getMatrix();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    scale = mGestureCropImageView.getCurrentScale();
+                }
+            }, 300);
         }
 
         @Override
@@ -294,7 +302,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
     };
 
 
-
     /**
      * 还原裁剪
      */
@@ -302,7 +309,11 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         mGestureCropImageView.setTargetAspectRatio(CropImageView.SOURCE_IMAGE_ASPECT_RATIO);//裁剪比例還原
         mGestureCropImageView.postRotate(-mGestureCropImageView.getCurrentAngle());
         //缩放为原来的比例
-        setImageData(intent);
+        try {
+            mGestureCropImageView.zoomInImage(scale, mGestureCropImageView.getmMidPntX(), mGestureCropImageView.getmMidPntY());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mGestureCropImageView.setImageToWrapCropBounds();
     }
 
@@ -324,12 +335,12 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         mBlockingView.setClickable(true);
         findViewById(R.id.state_loader).setVisibility(View.VISIBLE);
         findViewById(R.id.state_done).setVisibility(View.GONE);
-        final long a =System.currentTimeMillis();
+        final long a = System.currentTimeMillis();
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
-                Log.i("cropAndSaveImage",(System.currentTimeMillis()-a)/100+"");
+                Log.i("cropAndSaveImage", (System.currentTimeMillis() - a) / 100 + "");
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight);
                 finish();
             }
