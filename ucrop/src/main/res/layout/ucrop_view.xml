@@ -9,12 +9,14 @@
         android:id="@+id/image_view_crop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/ucrop_padding_crop_frame"/>
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="30dp"
+        android:paddingTop="30dp"/>
 
     <com.yalantis.ucrop.view.OverlayView
         android:id="@+id/view_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/ucrop_padding_crop_frame"/>
-
+        android:padding="15dp"/>
 </merge>

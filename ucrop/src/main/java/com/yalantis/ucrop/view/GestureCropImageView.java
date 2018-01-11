@@ -114,6 +114,22 @@ public class GestureCropImageView extends CropImageView {
         mRotateDetector = new RotationGestureDetector(new RotateListener());
     }
 
+    public float getmMidPntX() {
+        return mMidPntX;
+    }
+
+    public void setmMidPntX(float mMidPntX) {
+        this.mMidPntX = mMidPntX;
+    }
+
+    public float getmMidPntY() {
+        return mMidPntY;
+    }
+
+    public void setmMidPntY(float mMidPntY) {
+        this.mMidPntY = mMidPntY;
+    }
+
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
         @Override

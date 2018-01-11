@@ -241,6 +241,7 @@ public class CropImageView extends TransformImageView {
         } else if (deltaScale < 1 && getCurrentScale() * deltaScale >= getMinScale()) {
             super.postScale(deltaScale, px, py);
         }
+
     }
 
     /**

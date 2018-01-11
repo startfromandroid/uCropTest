@@ -311,6 +311,7 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         //缩放为原来的比例
         try {
             mGestureCropImageView.zoomInImage(scale, mGestureCropImageView.getmMidPntX(), mGestureCropImageView.getmMidPntY());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
