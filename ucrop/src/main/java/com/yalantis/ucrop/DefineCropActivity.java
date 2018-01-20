@@ -325,7 +325,7 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
      */
     private void rotateByAngle(int angle) {
         mGestureCropImageView.postRotate(angle);
-        mGestureCropImageView.setImageToWrapCropBounds();
+//        mGestureCropImageView.setImageToWrapCropBounds();
     }
 
 
