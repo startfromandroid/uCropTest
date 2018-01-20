@@ -144,7 +144,7 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
             String path = FileUtils.getPath(this, inputUri);
             Luban.with(this)
                     .load(path)
-                    .ignoreBy(200)
+                    .ignoreBy(400)
                     .setCompressListener(new OnCompressListener() {
                         @Override
                         public void onStart() {
@@ -325,8 +325,6 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
      */
     private void rotateByAngle(int angle) {
         mGestureCropImageView.postRotate(angle);
-
-//        mGestureCropImageView.setImageToWrapCropBounds();
     }
 
 
@@ -334,6 +332,7 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
      * 裁剪 保存图片
      */
     protected void cropAndSaveImage() {
+//        mGestureCropImageView.setImageToWrapCropBounds();
         mBlockingView.setClickable(true);
         findViewById(R.id.state_loader).setVisibility(View.VISIBLE);
         findViewById(R.id.state_done).setVisibility(View.GONE);
@@ -341,10 +340,37 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
             @Override
-            public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+            public void onBitmapCropped(@NonNull Uri resultUri, final int offsetX, final int offsetY, final int imageWidth, final int imageHeight) {
                 Log.i("cropAndSaveImage", (System.currentTimeMillis() - a) / 100 + "");
-                setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight);
-                finish();
+//                setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight);
+//                finish();
+                String path = FileUtils.getPath(DefineCropActivity.this, resultUri);
+                Luban.with(DefineCropActivity.this)
+                        .load(path)
+                        .ignoreBy(400)
+                        .setCompressListener(new OnCompressListener() {
+                            @Override
+                            public void onStart() {
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                try {
+                                    setResultUri(Uri.fromFile(file), mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight);
+                                    finish();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    setResultError(e);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                setResultError(e);
+                                finish();
+                            }
+                        }).launch();
             }
 
             @Override
