@@ -55,7 +55,7 @@ public class DefineCropActivity extends AppCompatActivity implements View.OnClic
         } else if (i == R.id.state_reset) {
             resetRotation();
         } else if (i == R.id.state_rotate) {
-            rotateByAngle(90);
+            rotateByAngle(-90);
         }
 
     }
